@@ -1,6 +1,6 @@
 ﻿namespace Business.Services;
 
-public class CustomerService
+public class StatusTypeService
 {
 
 }
