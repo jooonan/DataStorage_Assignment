@@ -35,7 +35,6 @@ public class CustomerService(CustomerRepository customerRepository) : ICustomerS
         };
     }
 
-
     public async Task<CustomerDto?> GetCustomerByIdAsync(int id)
     {
         var customer = await _customerRepository.GetCustomerByIdAsync(id);
