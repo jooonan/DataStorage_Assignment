@@ -19,6 +19,12 @@ public class UserRepository(DataContext context)
         return await _context.Users.FindAsync(id);
     }
 
+    public async Task<UserEntity?> GetUserByNameAsync(string firstName, string lastName)
+    {
+        return await _context.Users
+            .FirstOrDefaultAsync(u => u.FirstName == firstName && u.LastName == lastName);
+    }
+
     public async Task UpdateUserAsync(UserEntity user)
     {
         _context.Users.Update(user);

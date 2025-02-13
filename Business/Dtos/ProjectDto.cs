@@ -4,7 +4,7 @@ namespace Business.Dtos;
 
 public class ProjectDto
 {
-    public string? ProjectId { get; set; }
+    public string ProjectId { get; set; } = null!;
     public string Title { get; set; } = null!;
     public string? Description { get; set; }
     public DateTime StartDate { get; set; }

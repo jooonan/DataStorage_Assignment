@@ -1,6 +1,9 @@
-﻿namespace Business.Interfaces;
+﻿using Business.Dtos;
 
-public class IStatusTypeService
+namespace Business.Interfaces;
+
+public interface IStatusTypeService
 {
-
+    Task<IEnumerable<StatusTypeDto>> GetAllStatusTypesAsync();
+    Task<StatusTypeDto?> GetStatusTypeByIdAsync(int id);
 }

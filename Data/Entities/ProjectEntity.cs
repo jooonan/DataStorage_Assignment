@@ -6,7 +6,7 @@ namespace Data.Entities;
 public class ProjectEntity
 {
     [Key]
-    public string? ProjectId { get; set; }
+    public string ProjectId { get; set; } = null!;
 
     [Required]
     public string Title { get; set; } = null!;

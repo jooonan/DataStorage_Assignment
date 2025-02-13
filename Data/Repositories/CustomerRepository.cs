@@ -18,4 +18,10 @@ public class CustomerRepository(DataContext context)
     {
         return await _context.Customers.FindAsync(id);
     }
+
+    public async Task<CustomerEntity?> GetCustomerByNameAsync(string customerName)
+    {
+        return await _context.Customers
+            .FirstOrDefaultAsync(c => c.CustomerName == customerName);
+    }
 }
