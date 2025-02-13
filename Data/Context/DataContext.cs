@@ -36,5 +36,13 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
             .WithMany(s => s.Projects)
             .HasForeignKey(p => p.StatusId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        //Help from ChatGPT how to structure this part to have pre-made statuses with ids
+        modelBuilder.Entity<StatusTypeEntity>().HasData(
+            new StatusTypeEntity { Id = 1, StatusName = "Not Started" },
+            new StatusTypeEntity { Id = 2, StatusName = "In Progress" },
+            new StatusTypeEntity { Id = 3, StatusName = "Completed" },
+            new StatusTypeEntity { Id = 4, StatusName = "Cancelled" }
+        );
     }
 }
