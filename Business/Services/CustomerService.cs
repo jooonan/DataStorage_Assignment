@@ -44,14 +44,4 @@ public class CustomerService(CustomerRepository customerRepository) : ICustomerS
             CustomerName = customer.CustomerName
         };
     }
-
-    public async Task<CustomerDto?> GetCustomerByNameAsync(string customerName)
-    {
-        var existingCustomer = await _customerRepository.GetCustomerByNameAsync(customerName);
-        if (existingCustomer != null)
-        {
-            return new CustomerDto { Id = existingCustomer.Id, CustomerName = existingCustomer.CustomerName };
-        }
-        return null;
-    }
 }

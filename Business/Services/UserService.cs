@@ -53,22 +53,6 @@ public class UserService(UserRepository userRepository) : IUserService
         };
     }
 
-    public async Task<UserDto?> GetUserByNameAsync(string firstName, string lastName)
-    {
-        var existingUser = await _userRepository.GetUserByNameAsync(firstName, lastName);
-        if (existingUser != null)
-        {
-            return new UserDto
-            {
-                Id = existingUser.Id,
-                FirstName = existingUser.FirstName,
-                LastName = existingUser.LastName,
-                Email = existingUser.Email
-            };
-        }
-        return null;
-    }
-
     public async Task UpdateUserAsync(UserDto userDto)
     {
         var user = await _userRepository.GetUserByIdAsync(userDto.Id);
