@@ -373,6 +373,7 @@ public class MenuDialogs(IProjectService projectService, ICustomerService custom
         }
     }
 
+    #region HELPER CLASSES
 
     private async Task<int> GetValidProductName()
     {
@@ -471,4 +472,6 @@ public class MenuDialogs(IProjectService projectService, ICustomerService custom
             Console.WriteLine("Invalid date format. Please enter a valid date (YYYY-MM-DD).");
         }
     }
+
+    #endregion
 }
