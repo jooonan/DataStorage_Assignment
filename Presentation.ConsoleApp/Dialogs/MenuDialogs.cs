@@ -1,5 +1,4 @@
-﻿using System;
-using Business.Dtos;
+﻿using Business.Dtos;
 using Business.Interfaces;
 
 namespace Presentation.ConsoleApp.Dialogs;
