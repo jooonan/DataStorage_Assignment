@@ -10,11 +10,27 @@ public class StatusTypeRepository(DataContext context)
 
     public async Task<IEnumerable<StatusTypeEntity>> GetAllStatusTypesAsync()
     {
-        return await _context.StatusTypes.ToListAsync();
+        try
+        {
+            return await _context.StatusTypes.ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error while retrieving all status types: {ex.Message}");
+            return [];
+        }
     }
 
     public async Task<StatusTypeEntity?> GetStatusTypeByIdAsync(int id)
     {
-        return await _context.StatusTypes.FindAsync(id);
+        try
+        {
+            return await _context.StatusTypes.FindAsync(id);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error while retrieving status type by ID ({id}): {ex.Message}");
+            return null;
+        }
     }
 }

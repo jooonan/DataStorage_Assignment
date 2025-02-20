@@ -10,23 +10,39 @@ public class StatusTypeService(StatusTypeRepository statusTypeRepository) : ISta
 
     public async Task<IEnumerable<StatusTypeDto>> GetAllStatusTypesAsync()
     {
-        var statusTypes = await _statusTypeRepository.GetAllStatusTypesAsync();
-        return statusTypes.Select(s => new StatusTypeDto
+        try
         {
-            Id = s.Id,
-            StatusName = s.StatusName
-        }).ToList();
+            var statusTypes = await _statusTypeRepository.GetAllStatusTypesAsync();
+            return statusTypes.Select(s => new StatusTypeDto
+            {
+                Id = s.Id,
+                StatusName = s.StatusName
+            }).ToList();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error while retrieving all status types: {ex.Message}");
+            return [];
+        }
     }
 
     public async Task<StatusTypeDto?> GetStatusTypeByIdAsync(int id)
     {
-        var statusType = await _statusTypeRepository.GetStatusTypeByIdAsync(id);
-        if (statusType == null) return null;
-
-        return new StatusTypeDto
+        try
         {
-            Id = statusType.Id,
-            StatusName = statusType.StatusName
-        };
+            var statusType = await _statusTypeRepository.GetStatusTypeByIdAsync(id);
+            if (statusType == null) return null;
+
+            return new StatusTypeDto
+            {
+                Id = statusType.Id,
+                StatusName = statusType.StatusName
+            };
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error while retrieving status type by ID ({id}): {ex.Message}");
+            return null;
+        }
     }
 }

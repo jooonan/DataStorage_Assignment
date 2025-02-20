@@ -10,58 +10,81 @@ public class UserService(UserRepository userRepository) : IUserService
 
     public async Task<UserDto> AddUserAsync(string firstName, string lastName, string email)
     {
-        var existingUser = await _userRepository.GetUserByNameAsync(firstName, lastName);
-        if (existingUser != null)
+        try
         {
+            var existingUser = await _userRepository.GetUserByNameAsync(firstName, lastName);
+            if (existingUser != null)
+            {
+                return new UserDto
+                {
+                    Id = existingUser.Id,
+                    FirstName = existingUser.FirstName,
+                    LastName = existingUser.LastName,
+                    Email = existingUser.Email
+                };
+            }
+
+            var newUser = new UserEntity
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                Email = email
+            };
+
+            await _userRepository.AddUserAsync(newUser);
+
             return new UserDto
             {
-                Id = existingUser.Id,
-                FirstName = existingUser.FirstName,
-                LastName = existingUser.LastName,
-                Email = existingUser.Email
+                Id = newUser.Id,
+                FirstName = newUser.FirstName,
+                LastName = newUser.LastName,
+                Email = newUser.Email
             };
         }
-
-        var newUser = new UserEntity
+        catch (Exception ex)
         {
-            FirstName = firstName,
-            LastName = lastName,
-            Email = email
-        };
-
-        await _userRepository.AddUserAsync(newUser);
-
-        return new UserDto
-        {
-            Id = newUser.Id,
-            FirstName = newUser.FirstName,
-            LastName = newUser.LastName,
-            Email = newUser.Email
-        };
+            Console.WriteLine($"Error while adding user: {ex.Message}");
+            throw;
+        }
     }
-
 
     public async Task<UserDto?> GetUserByIdAsync(int id)
     {
-        var user = await _userRepository.GetUserByIdAsync(id);
-        return user == null ? null : new UserDto
+        try
         {
-            Id = user.Id,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Email = user.Email
-        };
+            var user = await _userRepository.GetUserByIdAsync(id);
+            return user == null ? null : new UserDto
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email
+            };
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error while retrieving user by ID ({id}): {ex.Message}");
+            return null;
+        }
     }
 
     public async Task UpdateUserAsync(UserDto userDto)
     {
-        var user = await _userRepository.GetUserByIdAsync(userDto.Id);
-        if (user == null) return;
+        try
+        {
+            var user = await _userRepository.GetUserByIdAsync(userDto.Id);
+            if (user == null) return;
 
-        user.FirstName = userDto.FirstName;
-        user.LastName = userDto.LastName;
-        user.Email = userDto.Email;
+            user.FirstName = userDto.FirstName;
+            user.LastName = userDto.LastName;
+            user.Email = userDto.Email;
 
-        await _userRepository.UpdateUserAsync(user);
+            await _userRepository.UpdateUserAsync(user);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error while updating user (ID: {userDto.Id}): {ex.Message}");
+            throw;
+        }
     }
 }

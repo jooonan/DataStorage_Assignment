@@ -10,23 +10,55 @@ public class ProductRepository(DataContext context)
 
     public async Task AddProductAsync(ProductEntity product)
     {
-        _context.Products.Add(product);
-        await _context.SaveChangesAsync();
+        try
+        {
+            _context.Products.Add(product);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error while adding product: {ex.Message}");
+            throw;
+        }
     }
 
     public async Task<ProductEntity?> GetProductByIdAsync(int id)
     {
-        return await _context.Products.FindAsync(id);
+        try
+        {
+            return await _context.Products.FindAsync(id);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error while retrieving product by ID ({id}): {ex.Message}");
+            return null;
+        }
     }
 
     public async Task<ProductEntity?> GetProductByNameAsync(string name)
     {
-        return await _context.Products.FirstOrDefaultAsync(p => p.ProductName == name);
+        try
+        {
+            return await _context.Products.FirstOrDefaultAsync(p => p.ProductName == name);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error while retrieving product by name ({name}): {ex.Message}");
+            return null;
+        }
     }
 
     public async Task UpdateProductAsync(ProductEntity product)
     {
-        _context.Products.Update(product);
-        await _context.SaveChangesAsync();
+        try
+        {
+            _context.Products.Update(product);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error while updating product (ID: {product.Id}): {ex.Message}");
+            throw;
+        }
     }
 }

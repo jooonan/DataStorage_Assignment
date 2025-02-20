@@ -11,37 +11,53 @@ public class CustomerService(CustomerRepository customerRepository) : ICustomerS
 
     public async Task<CustomerDto> AddCustomerAsync(string customerName)
     {
-        var existingCustomer = await _customerRepository.GetCustomerByNameAsync(customerName);
-        if (existingCustomer != null)
+        try
         {
+            var existingCustomer = await _customerRepository.GetCustomerByNameAsync(customerName);
+            if (existingCustomer != null)
+            {
+                return new CustomerDto
+                {
+                    Id = existingCustomer.Id,
+                    CustomerName = existingCustomer.CustomerName
+                };
+            }
+
+            var newCustomer = new CustomerEntity
+            {
+                CustomerName = customerName
+            };
+
+            await _customerRepository.AddCustomerAsync(newCustomer);
+
             return new CustomerDto
             {
-                Id = existingCustomer.Id,
-                CustomerName = existingCustomer.CustomerName
+                Id = newCustomer.Id,
+                CustomerName = newCustomer.CustomerName
             };
         }
-
-        var newCustomer = new CustomerEntity
+        catch (Exception ex)
         {
-            CustomerName = customerName
-        };
-
-        await _customerRepository.AddCustomerAsync(newCustomer);
-
-        return new CustomerDto
-        {
-            Id = newCustomer.Id,
-            CustomerName = newCustomer.CustomerName
-        };
+            Console.WriteLine($"Error while adding customer: {ex.Message}");
+            throw;
+        }
     }
 
     public async Task<CustomerDto?> GetCustomerByIdAsync(int id)
     {
-        var customer = await _customerRepository.GetCustomerByIdAsync(id);
-        return customer == null ? null : new CustomerDto
+        try
         {
-            Id = customer.Id,
-            CustomerName = customer.CustomerName
-        };
+            var customer = await _customerRepository.GetCustomerByIdAsync(id);
+            return customer == null ? null : new CustomerDto
+            {
+                Id = customer.Id,
+                CustomerName = customer.CustomerName
+            };
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error while retrieving customer: {ex.Message}");
+            return null;
+        }
     }
 }

@@ -10,60 +10,108 @@ public class ProjectRepository(DataContext context)
 
     public async Task AddProjectAsync(ProjectEntity project)
     {
-        project.ProjectId = await GenerateProjectIdAsync();
-        await _context.Projects.AddAsync(project);
-        await _context.SaveChangesAsync();
+        try
+        {
+            project.ProjectId = await GenerateProjectIdAsync();
+            await _context.Projects.AddAsync(project);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error while adding project: {ex.Message}");
+            throw;
+        }
     }
 
     public async Task<IEnumerable<ProjectEntity>> GetAllProjectsAsync()
     {
-        return await _context.Projects
-            .Include(p => p.Customer)
-            .Include(p => p.User)
-            .Include(p => p.Status)
-            .Include(p => p.Product)
-            .ToListAsync();
+        try
+        {
+            return await _context.Projects
+                .Include(p => p.Customer)
+                .Include(p => p.User)
+                .Include(p => p.Status)
+                .Include(p => p.Product)
+                .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error while retrieving all projects: {ex.Message}");
+            return [];
+        }
     }
 
     public async Task<ProjectEntity?> GetProjectByIdAsync(string projectId)
     {
-        return await _context.Projects
-            .Include(p => p.Customer)
-            .Include(p => p.User)
-            .FirstOrDefaultAsync(p => p.ProjectId == projectId);
+        try
+        {
+            return await _context.Projects
+                .Include(p => p.Customer)
+                .Include(p => p.User)
+                .FirstOrDefaultAsync(p => p.ProjectId == projectId);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error while retrieving project by ID ({projectId}): {ex.Message}");
+            return null;
+        }
     }
 
     public async Task UpdateProjectAsync(ProjectEntity project)
     {
-        _context.Projects.Update(project);
-        await _context.SaveChangesAsync();
+        try
+        {
+            _context.Projects.Update(project);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error while updating project (ID: {project.ProjectId}): {ex.Message}");
+            throw;
+        }
     }
 
     public async Task DeleteProjectAsync(string projectId)
     {
-        var project = await _context.Projects.FirstOrDefaultAsync(p => p.ProjectId == projectId);
-        if (project != null)
+        try
         {
-            _context.Projects.Remove(project);
-            await _context.SaveChangesAsync();
+            var project = await _context.Projects.FirstOrDefaultAsync(p => p.ProjectId == projectId);
+            if (project != null)
+            {
+                _context.Projects.Remove(project);
+                await _context.SaveChangesAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error while deleting project (ID: {projectId}): {ex.Message}");
+            throw;
         }
     }
 
-    //Help from ChatGPT how to structure project id to follow p-101, p-102 etc.
+    // Help from ChatGPT how to structure project id to follow P-101, P-102 etc.
     private async Task<string> GenerateProjectIdAsync()
     {
-        int counter = 101;
-        string newId;
-        bool exists;
-
-        do
+        try
         {
-            newId = $"P-{counter}";
-            exists = await _context.Projects.AnyAsync(p => p.ProjectId == newId);
-            counter++;
-        }
-        while (exists);
+            int counter = 101;
+            string newId;
+            bool exists;
 
-        return newId;
+            do
+            {
+                newId = $"P-{counter}";
+                exists = await _context.Projects.AnyAsync(p => p.ProjectId == newId);
+                counter++;
+            }
+            while (exists);
+
+            return newId;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error while generating project ID: {ex.Message}");
+            throw;
+        }
     }
 }
